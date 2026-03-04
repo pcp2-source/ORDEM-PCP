@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
@@ -25,7 +24,26 @@ import {
   KeyRound,
   ShieldCheck
 } from 'lucide-react';
-import { ProductionOrder, OrderStatus, Priority, SystemUser, SystemConfig, WhatsappContact, ProductionSector, ProductionSubSector, AuditEntry, SheetMaterial, TubeRoundMaterial, MetalonSquareMaterial, MetalonRectMaterial, LoadHistoryEntry, EngineeringPart } from './types';
+
+// Importação de Tipos
+import { 
+  ProductionOrder, 
+  OrderStatus, 
+  Priority, 
+  SystemUser, 
+  SystemConfig, 
+  ProductionSector, 
+  ProductionSubSector, 
+  AuditEntry, 
+  SheetMaterial, 
+  TubeRoundMaterial, 
+  MetalonSquareMaterial, 
+  MetalonRectMaterial, 
+  LoadHistoryEntry, 
+  EngineeringPart 
+} from './types';
+
+// CORREÇÃO DAS IMPORTAÇÕES: Apontando para a pasta ./components/
 import DashboardView from './components/DashboardView';
 import OrderFormView from './components/OrderFormView';
 import OrderListView from './components/OrderListView';
@@ -34,6 +52,8 @@ import SettingsView from './components/SettingsView';
 import WeightCalculatorView from './components/WeightCalculatorView';
 import EngineeringRegistryView from './components/EngineeringRegistryView';
 import HistoryView from './components/HistoryView';
+
+// Importação de Serviços
 import { analyzeProduction } from './services/geminiService';
 
 const SoAcoLogo = ({ light = false, large = false }) => (
@@ -262,7 +282,6 @@ const App: React.FC = () => {
     setIsAnalyzing(false);
   };
 
-  // TELA DE SETUP INICIAL
   if (setupMode) {
     return (
       <div className="min-h-screen bg-[#001a35] flex items-center justify-center p-6 relative overflow-hidden">
@@ -283,238 +302,4 @@ const App: React.FC = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Senha Mestra</label>
-              <input required type="password" value={setupPass} onChange={e => setSetupPass(e.target.value)} placeholder="DIGITE SUA SENHA" className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800]" />
-            </div>
-            <button type="submit" className="w-full py-6 bg-[#002855] text-[#FFB800] font-black uppercase text-xs rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-[#001328] transition-all active:scale-95 border-b-4 border-[#FFB800]">
-              <ShieldAlert className="w-5 h-5" /> Ativar Sistema SÓ AÇO
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
-  // TELA DE LOGIN
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-[#001a35] flex items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-           <div className="grid grid-cols-12 h-full w-full">
-              {Array.from({length: 144}).map((_, i) => <div key={i} className="border border-white/5"></div>)}
-           </div>
-        </div>
-        <div className="w-full max-w-md bg-white rounded-[3rem] shadow-2xl p-10 relative z-10 animate-in slide-in-from-bottom-8 duration-700">
-           <div className="flex flex-col items-center mb-10">
-              <SoAcoLogo large />
-              <div className="mt-6 flex items-center gap-2 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 shadow-inner">
-                 <Lock className="w-3.5 h-3.5 text-[#002855]" />
-                 <span className="text-[9px] font-black text-[#002855] uppercase tracking-widest">Acesso Restrito Industrial</span>
-              </div>
-           </div>
-           
-           <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Selecionar Usuário</label>
-                 <select 
-                    required 
-                    value={loginUserId} 
-                    onChange={e => setLoginUserId(e.target.value)}
-                    className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800] appearance-none cursor-pointer uppercase"
-                 >
-                    <option value="">-- SELECIONE SEU NOME --</option>
-                    {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                 </select>
-              </div>
-
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Senha Individual</label>
-                 <div className="relative">
-                    <input 
-                      required 
-                      type={showLoginPass ? "text" : "password"} 
-                      value={loginPassword} 
-                      onChange={e => setLoginPassword(e.target.value)} 
-                      placeholder="SUA SENHA" 
-                      className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800]" 
-                    />
-                    <button type="button" onClick={() => setShowLoginPass(!showLoginPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#002855]">
-                      {showLoginPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                 </div>
-              </div>
-
-              {loginError && <p className="text-red-600 text-[10px] font-black uppercase text-center">{loginError}</p>}
-
-              <button type="submit" className="w-full py-6 bg-[#002855] text-[#FFB800] font-black uppercase text-xs rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-[#001328] transition-all active:scale-95 border-b-4 border-[#FFB800]">
-                 <LogIn className="w-5 h-5" /> Entrar no Sistema
-              </button>
-           </form>
-           <p className="text-center text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-10">Software de Gestão Proprietário SÓ AÇO © 2025</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen flex bg-slate-50 overflow-hidden">
-      <aside className={`bg-[#001a35] text-white transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} flex flex-col shadow-2xl z-20`}>
-        <div className="p-6 flex items-center justify-between border-b border-white/5">
-          <div className={`${!isSidebarOpen && 'hidden'}`}>
-            <SoAcoLogo light />
-          </div>
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 hover:bg-white/10 rounded transition-colors">
-            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-6 h-6 mx-auto" />}
-          </button>
-        </div>
-
-        <nav className="flex-1 mt-6 px-4 space-y-2 overflow-y-auto custom-scrollbar">
-          <NavItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === 'dashboard'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('dashboard'); }} />
-          <NavItem icon={<ListTodo />} label="Ordens de Serviço" active={activeTab === 'orders'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('orders'); }} />
-          <div className="py-2"><div className={`h-px bg-white/10 mb-2 ${!isSidebarOpen && 'mx-4'}`}></div></div>
-          <NavItem icon={<PlusCircle />} label="Nova OP Simples" active={activeTab === 'new-order'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('new-order'); }} />
-          <NavItem icon={<TableIcon />} label="Detalhamento" active={activeTab === 'piece-order'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('piece-order'); }} />
-          <NavItem icon={<Scale />} label="Cálculo de Peso" active={activeTab === 'weight-calc'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('weight-calc')} />
-          <NavItem icon={<Compass />} label="Cadastro ENG" active={activeTab === 'eng-registry'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('eng-registry')} />
-          <NavItem icon={<HistoryIcon />} label="Histórico Carga" active={activeTab === 'history'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('history')} />
-          <div className="py-2"><div className={`h-px bg-white/10 mb-2 ${!isSidebarOpen && 'mx-4'}`}></div></div>
-          <NavItem icon={<Settings />} label="Configurações" active={activeTab === 'settings'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('settings')} />
-        </nav>
-
-        <div className="p-4 border-t border-white/5 bg-[#001328] space-y-2">
-          <button onClick={runAiAnalysis} disabled={isAnalyzing} className={`w-full flex items-center gap-3 p-3 rounded-xl bg-[#FFB800]/10 hover:bg-[#FFB800]/20 transition-all text-[#FFB800] font-bold border border-[#FFB800]/20 ${!isSidebarOpen && 'justify-center'}`}>
-            {isAnalyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <BrainCircuit className="w-5 h-5" />}
-            {isSidebarOpen && <span>Analista IA</span>}
-          </button>
-          <button onClick={handleLogout} className={`w-full flex items-center gap-3 p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white transition-all font-bold border border-rose-500/20 ${!isSidebarOpen && 'justify-center'}`}>
-            <LogOut className="w-5 h-5" />
-            {isSidebarOpen && <span>Sair / Logout</span>}
-          </button>
-        </div>
-      </aside>
-
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 shadow-sm">
-          <div className="flex items-center gap-4 flex-1 max-xl">
-            <div className="relative w-full">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <input 
-                type="text" 
-                placeholder="Pesquisar por ID, Cliente, Produto ou Notas..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:ring-2 focus:ring-[#002855] outline-none transition-all" 
-              />
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-6">
-            <div className="h-10 w-px bg-slate-100 mx-2 hidden md:block"></div>
-            <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 shadow-inner group">
-              <UserCheck className="w-4 h-4 text-[#002855]" />
-              <div className="flex flex-col">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Sessão Ativa</span>
-                <span className="text-[11px] font-black text-[#002855] uppercase">{activeUser?.name || 'SISTEMA'}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-[#002855]">Unidade SÓ AÇO</p>
-                <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{activeUser?.role || 'Visitante'}</p>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-[#002855] flex items-center justify-center text-white font-black border-2 border-[#FFB800]">
-                {activeUser?.name?.substring(0,2).toUpperCase() || 'SA'}
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
-          {aiInsight && (
-            <div className="mb-8 p-6 bg-[#002855]/5 border-l-4 border-[#FFB800] rounded-r-2xl relative shadow-sm">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-[#002855] font-black flex items-center gap-2 italic uppercase text-sm">
-                  <BrainCircuit className="w-4 h-4 text-[#FFB800]" /> Insight SÓ AÇO
-                </h3>
-                <button onClick={() => setAiInsight(null)} className="text-slate-400 hover:text-red-500"><X className="w-5 h-5" /></button>
-              </div>
-              <p className="text-[#002855] text-sm leading-relaxed whitespace-pre-wrap font-medium">{aiInsight}</p>
-            </div>
-          )}
-
-          {activeTab === 'dashboard' && <DashboardView orders={orders} sectors={sectors} subSectors={subSectors} users={users} />}
-          {activeTab === 'orders' && (
-            <OrderListView 
-              orders={orders} 
-              sectors={sectors} 
-              subSectors={subSectors} 
-              onUpdateStatus={updateOrderStatus} 
-              onDelete={deleteOrder} 
-              onNotify={sendWhatsAppNotification}
-              onReplicate={handleReplicate}
-              searchQuery={searchQuery}
-              activeUser={activeUser}
-              users={users}
-            />
-          )}
-          {activeTab === 'new-order' && <OrderFormView initialData={replicateOrderData} sectors={sectors} subSectors={subSectors} onSubmit={addOrder} onCancel={() => { setReplicateOrderData(null); setActiveTab('dashboard'); }} />}
-          {activeTab === 'piece-order' && <PieceOrderFormView initialData={replicateOrderData} sectors={sectors} subSectors={subSectors} onSubmit={addOrder} onCancel={() => { setReplicateOrderData(null); setActiveTab('dashboard'); }} />}
-          {activeTab === 'weight-calc' && <WeightCalculatorView sheets={sheets} tubesRound={tubesRound} tubesSquare={tubesSquare} tubesRect={tubesRect} activeUser={activeUser} />}
-          {activeTab === 'eng-registry' && (
-            <EngineeringRegistryView 
-              sheets={sheets} 
-              tubesRound={tubesRound} 
-              tubesSquare={tubesSquare} 
-              tubesRect={tubesRect} 
-              loadHistory={loadHistory}
-              setLoadHistory={setLoadHistory}
-              library={library}
-              setLibrary={setLibrary}
-              activeUser={activeUser}
-            />
-          )}
-          {activeTab === 'history' && <HistoryView loadHistory={loadHistory} setLoadHistory={setLoadHistory} activeUser={activeUser} users={users} />}
-          {activeTab === 'settings' && (
-            isSettingsUnlocked ? (
-              <SettingsView 
-                config={config} setConfig={setConfig} users={users} setUsers={setUsers} 
-                sectors={sectors} setSectors={setSectors} subSectors={subSectors} setSubSectors={setSubSectors} 
-                sheets={sheets} setSheets={setSheets} tubesRound={tubesRound} setTubesRound={setTubesRound} 
-                tubesSquare={tubesSquare} setTubesSquare={setTubesSquare} tubesRect={tubesRect} setTubesRect={setTubesRect} 
-              />
-            ) : (
-              <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[3rem] shadow-2xl border-2 border-slate-100 animate-in zoom-in-95 duration-500 flex flex-col items-center">
-                 <div className="w-16 h-16 bg-[#002855] rounded-2xl flex items-center justify-center mb-6 shadow-lg border-2 border-[#FFB800]">
-                    <KeyRound className="w-8 h-8 text-[#FFB800]" />
-                 </div>
-                 <h2 className="text-xl font-black text-[#002855] uppercase italic mb-2">Painel de Administração</h2>
-                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8 text-center">Digite a senha de segurança para acessar o módulo de configurações.</p>
-                 <form onSubmit={handleSettingsUnlock} className="w-full space-y-4">
-                    <input 
-                       type="password" 
-                       value={settingsUnlockInput}
-                       onChange={e => setSettingsUnlockInput(e.target.value)}
-                       placeholder="SENHA DE ACESSO"
-                       className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800] text-center"
-                    />
-                    <button type="submit" className="w-full py-5 bg-[#002855] text-[#FFB800] font-black uppercase text-[10px] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-[#001a35] transition-all">
-                       <ShieldCheck className="w-5 h-5" /> Liberar Painel
-                    </button>
-                 </form>
-              </div>
-            )
-          )}
-        </div>
-      </main>
-    </div>
-  );
-};
-
-interface NavItemProps { icon: React.ReactNode; label: string; active: boolean; collapsed: boolean; onClick: () => void; }
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active, collapsed, onClick }) => (
-  <button onClick={onClick} className={`w-full flex items-center gap-3 p-3.5 rounded-xl transition-all duration-300 ${active ? 'bg-[#FFB800] text-[#001a35] font-black shadow-lg shadow-[#FFB800]/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'} ${collapsed ? 'justify-center' : ''}`}>
-    <span className={`w-6 h-6 flex-shrink-0 ${active ? 'text-[#001a35]' : ''}`}>{icon}</span>
-    {!collapsed && <span className="font-bold tracking-tight">{label}</span>}
-  </button>
-);
-
-export default App;
+              <input required type="password" value={setupPass} onChange
