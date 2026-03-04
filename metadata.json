@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Gestão Pró-Produção",
+  "description": "Um sistema avançado para geração, registro e acompanhamento de ordens de produção com integração automatizada de mensagens via WhatsApp e análise inteligente via Gemini.",
+  "requestFramePermissions": []
+}
