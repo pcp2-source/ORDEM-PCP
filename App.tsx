@@ -24,7 +24,6 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-// IMPORTAÇÃO DE TIPOS
 import { 
   ProductionOrder, 
   OrderStatus, 
@@ -42,7 +41,6 @@ import {
   EngineeringPart 
 } from './types';
 
-// IMPORTAÇÃO DOS COMPONENTES
 import DashboardView from './components/DashboardView';
 import OrderFormView from './components/OrderFormView';
 import OrderListView from './components/OrderListView';
@@ -52,7 +50,6 @@ import WeightCalculatorView from './components/WeightCalculatorView';
 import EngineeringRegistryView from './components/EngineeringRegistryView';
 import HistoryView from './components/HistoryView';
 
-// IMPORTAÇÃO DO SERVIÇO
 import { analyzeProduction } from './services/geminiService';
 
 // ============================================
