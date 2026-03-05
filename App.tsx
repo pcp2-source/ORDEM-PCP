@@ -24,7 +24,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-// IMPORTAÇÃO DE TIPOS - Removido WhatsappContact se ele não existir no seu types.ts
+// IMPORTAÇÃO DE TIPOS
 import { 
   ProductionOrder, 
   OrderStatus, 
@@ -42,7 +42,7 @@ import {
   EngineeringPart 
 } from './types';
 
-// IMPORTAÇÃO DOS COMPONENTES - Caminhos corrigidos
+// IMPORTAÇÃO DOS COMPONENTES
 import DashboardView from './components/DashboardView';
 import OrderFormView from './components/OrderFormView';
 import OrderListView from './components/OrderListView';
@@ -54,6 +54,32 @@ import HistoryView from './components/HistoryView';
 
 // IMPORTAÇÃO DO SERVIÇO
 import { analyzeProduction } from './services/geminiService';
+
+// ============================================
+// ✅ FUNÇÕES SEGURAS DE LOCALSTORAGE
+// ============================================
+
+const getLocalStorage = (key: string, defaultValue: any = null) => {
+  try {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    }
+  } catch (error) {
+    console.error(`Erro ao ler localStorage (${key}):`, error);
+  }
+  return defaultValue;
+};
+
+const setLocalStorage = (key: string, value: any) => {
+  try {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (error) {
+    console.error(`Erro ao salvar localStorage (${key}):`, error);
+  }
+};
 
 const SoAcoLogo = ({ light = false, large = false }) => (
   <div className="flex items-center gap-2 select-none">
@@ -107,204 +133,266 @@ const App: React.FC = () => {
 
   const MASTER_PASSWORD = '104210';
 
+  // ============================================
+  // ✅ CARREGAMENTO SEGURO DO LOCALSTORAGE
+  // ============================================
   useEffect(() => {
-    const savedOrders = localStorage.getItem('prod_orders');
-    const savedHistory = localStorage.getItem('sa_load_history');
-    const savedLibrary = localStorage.getItem('sa_eng_library');
-    const savedUsers = localStorage.getItem('sa_users');
-    const savedSectors = localStorage.getItem('sa_sectors');
-    const savedSubSectors = localStorage.getItem('sa_subsectors');
-    const savedSheets = localStorage.getItem('sa_sheets');
-    const savedTubesRound = localStorage.getItem('sa_tubes_round');
-    const savedTubesSquare = localStorage.getItem('sa_tubes_square');
-    const savedTubesRect = localStorage.getItem('sa_tubes_rect');
-    const savedConfig = localStorage.getItem('sa_config_v2');
+    const savedOrders = getLocalStorage('prod_orders', null);
+    const savedHistory = getLocalStorage('sa_load_history', null);
+    const savedLibrary = getLocalStorage('sa_eng_library', null);
+    const savedUsers = getLocalStorage('sa_users', null);
+    const savedSectors = getLocalStorage('sa_sectors', null);
+    const savedSubSectors = getLocalStorage('sa_subsectors', null);
+    const savedSheets = getLocalStorage('sa_sheets', null);
+    const savedTubesRound = getLocalStorage('sa_tubes_round', null);
+    const savedTubesSquare = getLocalStorage('sa_tubes_square', null);
+    const savedTubesRect = getLocalStorage('sa_tubes_rect', null);
+    const savedConfig = getLocalStorage('sa_config_v2', null);
     
-    if (savedOrders) setOrders(JSON.parse(savedOrders));
-    if (savedHistory) setLoadHistory(JSON.parse(savedHistory));
-    if (savedLibrary) setLibrary(JSON.parse(savedLibrary));
+    if (savedOrders) setOrders(savedOrders);
+    if (savedHistory) setLoadHistory(savedHistory);
+    if (savedLibrary) setLibrary(savedLibrary);
     if (savedUsers) {
-      const parsedUsers = JSON.parse(savedUsers);
-      setUsers(parsedUsers);
-      if (parsedUsers.length === 0) setSetupMode(true);
+      setUsers(savedUsers);
+      if (savedUsers.length === 0) setSetupMode(true);
     } else {
       setSetupMode(true);
     }
     
-    if (savedSectors) setSectors(JSON.parse(savedSectors));
-    if (savedSubSectors) setSubSectors(JSON.parse(savedSubSectors));
-    if (savedSheets) setSheets(JSON.parse(savedSheets));
-    if (savedTubesRound) setTubesRound(JSON.parse(savedTubesRound));
-    if (savedTubesSquare) setTubesSquare(JSON.parse(savedTubesSquare));
-    if (savedTubesRect) setTubesRect(JSON.parse(savedTubesRect));
-    if (savedConfig) setConfig(JSON.parse(savedConfig));
+    if (savedSectors) setSectors(savedSectors);
+    if (savedSubSectors) setSubSectors(savedSubSectors);
+    if (savedSheets) setSheets(savedSheets);
+    if (savedTubesRound) setTubesRound(savedTubesRound);
+    if (savedTubesSquare) setTubesSquare(savedTubesSquare);
+    if (savedTubesRect) setTubesRect(savedTubesRect);
+    if (savedConfig) setConfig(savedConfig);
   }, []);
 
-  useEffect(() => { localStorage.setItem('prod_orders', JSON.stringify(orders)); }, [orders]);
-  useEffect(() => { localStorage.setItem('sa_load_history', JSON.stringify(loadHistory)); }, [loadHistory]);
-  useEffect(() => { localStorage.setItem('sa_eng_library', JSON.stringify(library)); }, [library]);
-  useEffect(() => { localStorage.setItem('sa_users', JSON.stringify(users)); }, [users]);
-  useEffect(() => { localStorage.setItem('sa_sectors', JSON.stringify(sectors)); }, [sectors]);
-  useEffect(() => { localStorage.setItem('sa_subsectors', JSON.stringify(subSectors)); }, [subSectors]);
-  useEffect(() => { localStorage.setItem('sa_sheets', JSON.stringify(sheets)); }, [sheets]);
-  useEffect(() => { localStorage.setItem('sa_tubes_round', JSON.stringify(tubesRound)); }, [tubesRound]);
-  useEffect(() => { localStorage.setItem('sa_tubes_square', JSON.stringify(tubesSquare)); }, [tubesSquare]);
-  useEffect(() => { localStorage.setItem('sa_tubes_rect', JSON.stringify(tubesRect)); }, [tubesRect]);
-  useEffect(() => { localStorage.setItem('sa_config_v2', JSON.stringify(config)); }, [config]);
+  // ============================================
+  // ✅ SALVAMENTO SEGURO NO LOCALSTORAGE
+  // ============================================
+  useEffect(() => { setLocalStorage('prod_orders', orders); }, [orders]);
+  useEffect(() => { setLocalStorage('sa_load_history', loadHistory); }, [loadHistory]);
+  useEffect(() => { setLocalStorage('sa_eng_library', library); }, [library]);
+  useEffect(() => { setLocalStorage('sa_users', users); }, [users]);
+  useEffect(() => { setLocalStorage('sa_sectors', sectors); }, [sectors]);
+  useEffect(() => { setLocalStorage('sa_subsectors', subSectors); }, [subSectors]);
+  useEffect(() => { setLocalStorage('sa_sheets', sheets); }, [sheets]);
+  useEffect(() => { setLocalStorage('sa_tubes_round', tubesRound); }, [tubesRound]);
+  useEffect(() => { setLocalStorage('sa_tubes_square', tubesSquare); }, [tubesSquare]);
+  useEffect(() => { setLocalStorage('sa_tubes_rect', tubesRect); }, [tubesRect]);
+  useEffect(() => { setLocalStorage('sa_config_v2', config); }, [config]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError('');
-    const user = users.find(u => u.id === loginUserId);
-    if (user && user.password === loginPassword) {
-      setActiveUser(user);
-      setIsLoggedIn(true);
-      setLoginPassword('');
-    } else {
-      setLoginError('Senha incorreta ou usuário não selecionado.');
-    }
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setActiveUser(null);
-    setLoginUserId('');
-    setIsSettingsUnlocked(false);
-  };
-
-  const handleSettingsUnlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    const isCorrect = settingsUnlockInput === MASTER_PASSWORD || 
-                      (config.settingsPassword && settingsUnlockInput === config.settingsPassword);
-    
-    if (isCorrect) {
-      setIsSettingsUnlocked(true);
-      setSettingsUnlockInput('');
-    } else {
-      alert("Acesso Negado: Senha Incorreta.");
-    }
-  };
-
-  const handleSetup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!setupName || !setupPass) return;
-    const admin: SystemUser = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: setupName.toUpperCase(),
-      role: 'Administrador',
-      password: setupPass
-    };
-    setUsers([admin]);
-    setActiveUser(admin);
-    setIsLoggedIn(true);
-    setSetupMode(false);
-  };
-
-  const createLog = (action: string, details: string): AuditEntry => ({
-    id: Math.random().toString(36).substr(2, 9),
-    timestamp: new Date().toISOString(),
-    userName: activeUser?.name || 'Sistema',
-    action,
-    details
-  });
-
-  const addOrder = (newOrder: ProductionOrder, notify: boolean) => {
-    const orderWithHistory = {
-      ...newOrder,
-      createdBy: activeUser?.name || 'SISTEMA',
-      createdByRole: activeUser?.role || 'SISTEMA',
-      history: [createLog('Criação', `Ordem registrada por ${activeUser?.name || 'Sistema'}`)]
-    };
-    setOrders(prev => [orderWithHistory, ...prev]);
+  const addOrder = (order: ProductionOrder, notify: boolean) => {
+    setOrders([...orders, order]);
+    if (notify) sendWhatsAppNotification(order);
     setReplicateOrderData(null);
-    if (notify) sendWhatsAppNotification(orderWithHistory);
-    setActiveTab('orders');
+    setActiveTab('dashboard');
   };
 
-  const updateOrderStatus = (id: string, status: OrderStatus) => {
-    setOrders(prev => prev.map(o => {
-      if (o.id === id) {
-        const log = createLog('Mudança de Status', `De ${o.status} para ${status}`);
-        return { ...o, status, history: [log, ...o.history] };
-      }
-      return o;
-    }));
+  const updateOrderStatus = (id: string, newStatus: OrderStatus) => {
+    setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
   };
 
   const deleteOrder = (id: string) => {
-    if (window.confirm('Deseja excluir permanentemente esta ordem?')) {
-      setOrders(prev => prev.filter(o => o.id !== id));
+    if (confirm('Tem certeza que deseja deletar essa ordem?')) {
+      setOrders(orders.filter(o => o.id !== id));
     }
+  };
+
+  const sendWhatsAppNotification = (order: ProductionOrder) => {
+    const phoneNumber = config.contacts[0]?.number || '5586994703472';
+    const message = `*SÓ AÇO - Nova Ordem de Produção*\n\nID: ${order.id}\nCliente: ${order.clientName}\nProduto: ${order.productName}\nPrazo: ${new Date(order.deadline).toLocaleDateString('pt-BR')}\nPrioridade: ${order.priority}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleReplicate = (order: ProductionOrder) => {
     setReplicateOrderData(order);
-    if (order.items && order.items.length > 0) setActiveTab('piece-order');
-    else setActiveTab('new-order');
+    if (order.items && order.items.length > 0) {
+      setActiveTab('piece-order');
+    } else {
+      setActiveTab('new-order');
+    }
   };
 
-  const sendWhatsAppNotification = (order: ProductionOrder) => {
-    if (config.contacts.length === 0) {
-      alert("Aviso: Nenhum número de WhatsApp cadastrado nas configurações.");
-      return;
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const user = users.find(u => u.id === loginUserId && u.password === loginPassword);
+    
+    if (user) {
+      setActiveUser(user);
+      setIsLoggedIn(true);
+      setLoginError('');
+      setLoginPassword('');
+    } else {
+      setLoginError('Usuário ou senha inválidos');
     }
-    const creationDate = new Date(order.createdAt).toLocaleDateString('pt-BR');
-    const deadlineDate = new Date(order.deadline).toLocaleDateString('pt-BR');
-    let text = `*SÓ AÇO - NOVA ORDEM DE PRODUÇÃO*\n` +
-               `------------------------------------------\n` +
-               `📦 *ID:* ${order.id}\n` +
-               `📅 *Data Emissão:* ${creationDate}\n` +
-               `🏢 *Setor:* ${order.sector}\n` +
-               (order.subSector ? `🏗️ *Sub-setor:* ${order.subSector}\n` : '') +
-               `👤 *Cliente:* ${order.clientName}\n` +
-               `🛠️ Produto: ${order.productName}\n` +
-               `🔢 *Quantidade:* ${order.quantity} ${order.unit}\n` +
-               `🏁 *Prazo Entrega:* ${deadlineDate}\n` +
-               `👤 *Criado por:* ${order.createdBy || 'Sistema'}\n\n` +
-               `📝 *OBSERVAÇÕES TÉCNICAS:*\n` +
-               `${order.notes && order.notes.trim() !== "" ? `_${order.notes.trim()}_` : '---'}\n\n` +
-               `🔥 *PRIORIDADE:* ${order.priority.toUpperCase()}\n` +
-               `------------------------------------------\n` +
-               `_Enviado via Gestão SÓ AÇO_`;
+  };
 
-    config.contacts.forEach((contact, index) => {
-      const pureNumber = contact.number.replace(/\D/g, '');
-      const url = `https://wa.me/${pureNumber}?text=${encodeURIComponent(text)}`;
-      setTimeout(() => { window.open(url, '_blank'); }, index * 800);
-    });
+  const handleLogout = () => {
+    setActiveUser(null);
+    setIsLoggedIn(false);
+    setLoginUserId('');
+    setLoginPassword('');
+    setActiveTab('dashboard');
+  };
+
+  const handleSettingsUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (settingsUnlockInput === MASTER_PASSWORD) {
+      setIsSettingsUnlocked(true);
+      setSettingsUnlockInput('');
+    } else {
+      alert('Senha incorreta');
+      setSettingsUnlockInput('');
+    }
   };
 
   const runAiAnalysis = async () => {
+    if (orders.length === 0) {
+      alert('Nenhuma ordem para analisar');
+      return;
+    }
+
     setIsAnalyzing(true);
-    const insight = await analyzeProduction(orders);
-    setAiInsight(insight);
-    setIsAnalyzing(false);
+    try {
+      const insight = await analyzeProduction(orders, users);
+      setAiInsight(insight);
+    } catch (error) {
+      alert('Erro na análise: ' + error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+
+  const handleSetupUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!setupName || !setupPass) {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    const newUser: SystemUser = {
+      id: setupName,
+      name: setupName,
+      password: setupPass,
+      role: 'Administrador',
+      createdAt: new Date().toISOString()
+    };
+
+    setUsers([newUser]);
+    setActiveUser(newUser);
+    setIsLoggedIn(true);
+    setSetupMode(false);
+  };
+
+  if (!isLoggedIn && !setupMode) {
+    return (
+      <div className="w-full h-screen bg-gradient-to-br from-[#002855] to-[#001428] flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center space-y-4 mb-12">
+            <SoAcoLogo light large />
+            <div>
+              <h1 className="text-4xl font-black text-white italic tracking-tighter">SÓ AÇO</h1>
+              <p className="text-[#FFB800] text-[11px] font-black uppercase tracking-[0.3em] mt-2">Sistema de Produção</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleLogin} className="bg-white rounded-[2.5rem] p-10 shadow-2xl border-2 border-[#FFB800]/20 space-y-6">
+            <div>
+              <label className="text-[10px] font-black text-[#002855] uppercase tracking-widest mb-3 block ml-1 flex items-center gap-2">
+                <LogIn className="w-4 h-4 text-[#FFB800]" /> Acesso de Usuário
+              </label>
+              <input 
+                type="text"
+                value={loginUserId}
+                onChange={e => setLoginUserId(e.target.value)}
+                placeholder="ID do Usuário"
+                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-[#FFB800] outline-none font-bold text-[#002855]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[10px] font-black text-[#002855] uppercase tracking-widest mb-3 block ml-1 flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#FFB800]" /> Senha
+              </label>
+              <div className="relative">
+                <input 
+                  type={showLoginPass ? 'text' : 'password'}
+                  value={loginPassword}
+                  onChange={e => setLoginPassword(e.target.value)}
+                  placeholder="Senha de Acesso"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-[#FFB800] outline-none font-bold text-[#002855]"
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowLoginPass(!showLoginPass)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#002855]"
+                >
+                  {showLoginPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {loginError && (
+              <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-700 text-[11px] font-black uppercase tracking-widest flex items-start gap-2">
+                <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" /> {loginError}
+              </div>
+            )}
+
+            <button 
+              type="submit"
+              className="w-full py-5 bg-[#002855] text-[#FFB800] font-black uppercase text-[11px] tracking-[0.3em] rounded-2xl shadow-xl hover:bg-[#001a35] transition-all"
+            >
+              Acessar Sistema
+            </button>
+          </form>
+
+          <p className="text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+            Sistema Protegido de Produção
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (setupMode) {
     return (
-      <div className="min-h-screen bg-[#001a35] flex items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#FFB800] rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-[120px]"></div>
-        </div>
-        <div className="w-full max-w-lg bg-white rounded-[3rem] shadow-2xl p-12 relative z-10 animate-in zoom-in-95 duration-500">
-          <div className="flex flex-col items-center mb-10">
-            <SoAcoLogo large />
-            <h1 className="text-xl font-black text-[#002855] uppercase mt-6 italic tracking-tight text-center">Configuração de Primeiro Acesso</h1>
-            <p className="text-slate-400 font-bold text-center text-sm mt-2">Cadastre o administrador do sistema.</p>
+      <div className="w-full h-screen bg-gradient-to-br from-[#002855] to-[#001428] flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center space-y-4 mb-12">
+            <SoAcoLogo light large />
+            <div>
+              <h1 className="text-4xl font-black text-white italic tracking-tighter">SÓ AÇO</h1>
+              <p className="text-[#FFB800] text-[11px] font-black uppercase tracking-[0.3em] mt-2">Primeiro Acesso</p>
+            </div>
           </div>
-          <form onSubmit={handleSetup} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nome Completo</label>
-              <input required type="text" value={setupName} onChange={e => setSetupName(e.target.value)} placeholder="EX: ENCARREGADO GERAL" className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800] uppercase" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Senha Mestra</label>
-              <input required type="password" value={setupPass} onChange={e => setSetupPass(e.target.value)} placeholder="DIGITE SUA SENHA" className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800]" />
-            </div>
-            <button type="submit" className="w-full py-6 bg-[#002855] text-[#FFB800] font-black uppercase text-xs rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-[#001328] transition-all active:scale-95 border-b-4 border-[#FFB800]">
-              <ShieldAlert className="w-5 h-5" /> Ativar Sistema SÓ AÇO
+
+          <form onSubmit={handleSetupUser} className="bg-white rounded-[2.5rem] p-10 shadow-2xl border-2 border-[#FFB800]/20 space-y-6">
+            <p className="text-[10px] font-bold text-slate-500 text-center">Configure o primeiro usuário do sistema</p>
+            
+            <input 
+              type="text"
+              value={setupName}
+              onChange={e => setSetupName(e.target.value)}
+              placeholder="Nome de Usuário"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-[#FFB800] outline-none font-bold text-[#002855]"
+            />
+
+            <input 
+              type="password"
+              value={setupPass}
+              onChange={e => setSetupPass(e.target.value)}
+              placeholder="Senha"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-[#FFB800] outline-none font-bold text-[#002855]"
+            />
+
+            <button 
+              type="submit"
+              className="w-full py-5 bg-[#002855] text-[#FFB800] font-black uppercase text-[11px] rounded-2xl shadow-xl hover:bg-[#001a35] transition-all"
+            >
+              Criar Usuário
             </button>
           </form>
         </div>
@@ -312,83 +400,20 @@ const App: React.FC = () => {
     );
   }
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-[#001a35] flex items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-            <div className="grid grid-cols-12 h-full w-full">
-               {Array.from({length: 144}).map((_, i) => <div key={i} className="border border-white/5"></div>)}
-            </div>
-        </div>
-        <div className="w-full max-w-md bg-white rounded-[3rem] shadow-2xl p-10 relative z-10 animate-in slide-in-from-bottom-8 duration-700">
-           <div className="flex flex-col items-center mb-10">
-              <SoAcoLogo large />
-              <div className="mt-6 flex items-center gap-2 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100 shadow-inner">
-                 <Lock className="w-3.5 h-3.5 text-[#002855]" />
-                 <span className="text-[9px] font-black text-[#002855] uppercase tracking-widest">Acesso Restrito Industrial</span>
-              </div>
-           </div>
-           
-           <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Selecionar Usuário</label>
-                 <select 
-                    required 
-                    value={loginUserId} 
-                    onChange={e => setLoginUserId(e.target.value)}
-                    className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800] appearance-none cursor-pointer uppercase"
-                 >
-                    <option value="">-- SELECIONE SEU NOME --</option>
-                    {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                 </select>
-              </div>
-
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Senha Individual</label>
-                 <div className="relative">
-                    <input 
-                      required 
-                      type={showLoginPass ? "text" : "password"} 
-                      value={loginPassword} 
-                      onChange={e => setLoginPassword(e.target.value)} 
-                      placeholder="SUA SENHA" 
-                      className="w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-100 font-black text-[#002855] outline-none focus:border-[#FFB800]" 
-                    />
-                    <button type="button" onClick={() => setShowLoginPass(!showLoginPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#002855]">
-                      {showLoginPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                 </div>
-              </div>
-
-              {loginError && <p className="text-red-600 text-[10px] font-black uppercase text-center">{loginError}</p>}
-
-              <button type="submit" className="w-full py-6 bg-[#002855] text-[#FFB800] font-black uppercase text-xs rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-[#001328] transition-all active:scale-95 border-b-4 border-[#FFB800]">
-                 <LogIn className="w-5 h-5" /> Entrar no Sistema
-              </button>
-           </form>
-           <p className="text-center text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-10">Software de Gestão Proprietário SÓ AÇO © 2025</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex bg-slate-50 overflow-hidden">
-      <aside className={`bg-[#001a35] text-white transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} flex flex-col shadow-2xl z-20`}>
-        <div className="p-6 flex items-center justify-between border-b border-white/5">
-          <div className={`${!isSidebarOpen && 'hidden'}`}>
-            <SoAcoLogo light />
-          </div>
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 hover:bg-white/10 rounded transition-colors">
-            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-6 h-6 mx-auto" />}
+    <div className="flex h-screen bg-white">
+      <aside className={`${isSidebarOpen ? 'w-72' : 'w-24'} bg-[#002855] text-white transition-all duration-500 flex flex-col overflow-hidden border-r border-white/10`}>
+        <div className="p-6 border-b border-white/10 flex items-center gap-3 justify-between">
+          {isSidebarOpen && <SoAcoLogo light />}
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
+            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        <nav className="flex-1 mt-6 px-4 space-y-2 overflow-y-auto custom-scrollbar">
-          <NavItem icon={<LayoutDashboard />} label="Dashboard" active={activeTab === 'dashboard'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('dashboard'); }} />
-          <NavItem icon={<ListTodo />} label="Ordens de Serviço" active={activeTab === 'orders'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('orders'); }} />
-          <div className="py-2"><div className={`h-px bg-white/10 mb-2 ${!isSidebarOpen && 'mx-4'}`}></div></div>
-          <NavItem icon={<PlusCircle />} label="Nova OP Simples" active={activeTab === 'new-order'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('new-order'); }} />
+        <nav className="flex-1 space-y-2 p-4 overflow-y-auto">
+          <NavItem icon={<LayoutDashboard />} label="Painel Geral" active={activeTab === 'dashboard'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('dashboard')} />
+          <NavItem icon={<ListTodo />} label="Ordens (Prod)" active={activeTab === 'orders'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('orders')} />
+          <NavItem icon={<PlusCircle />} label="Nova OP" active={activeTab === 'new-order'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('new-order'); }} />
           <NavItem icon={<TableIcon />} label="Detalhamento" active={activeTab === 'piece-order'} collapsed={!isSidebarOpen} onClick={() => { setReplicateOrderData(null); setActiveTab('piece-order'); }} />
           <NavItem icon={<Scale />} label="Cálculo de Peso" active={activeTab === 'weight-calc'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('weight-calc')} />
           <NavItem icon={<Compass />} label="Cadastro ENG" active={activeTab === 'eng-registry'} collapsed={!isSidebarOpen} onClick={() => setActiveTab('eng-registry')} />
