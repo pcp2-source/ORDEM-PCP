@@ -14,7 +14,6 @@ import {
   Scale,
   Compass,
   History as HistoryIcon,
-  Lock,
   LogIn,
   LogOut,
   ShieldAlert,
@@ -32,7 +31,6 @@ import {
   SystemConfig, 
   ProductionSector, 
   ProductionSubSector, 
-  AuditEntry, 
   SheetMaterial, 
   TubeRoundMaterial, 
   MetalonSquareMaterial, 
@@ -93,37 +91,30 @@ const App: React.FC = () => {
   const [orders, setOrders] = useState<ProductionOrder[]>([]);
   const [loadHistory, setLoadHistory] = useState<LoadHistoryEntry[]>([]);
   const [library, setLibrary] = useState<EngineeringPart[]>([]);
-  
   const [replicateOrderData, setReplicateOrderData] = useState<ProductionOrder | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  
   const [users, setUsers] = useState<SystemUser[]>([]);
   const [activeUser, setActiveUser] = useState<SystemUser | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
   const [sectors, setSectors] = useState<ProductionSector[]>([]);
   const [subSectors, setSubSectors] = useState<ProductionSubSector[]>([]);
   const [sheets, setSheets] = useState<SheetMaterial[]>([]);
   const [tubesRound, setTubesRound] = useState<TubeRoundMaterial[]>([]);
   const [tubesSquare, setTubesSquare] = useState<MetalonSquareMaterial[]>([]);
   const [tubesRect, setTubesRect] = useState<MetalonRectMaterial[]>([]);
-  
   const [config, setConfig] = useState<SystemConfig>({ 
     contacts: [{ id: '1', label: 'Principal', number: '5586994703472' }],
     settingsPassword: ''
   });
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
   const [loginUserId, setLoginUserId] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPass, setShowLoginPass] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isSettingsUnlocked, setIsSettingsUnlocked] = useState(false);
   const [settingsUnlockInput, setSettingsUnlockInput] = useState('');
-
   const [setupMode, setSetupMode] = useState(false);
   const [setupName, setSetupName] = useState('');
   const [setupPass, setSetupPass] = useState('');
@@ -213,7 +204,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const user = users.find(u => u.id === loginUserId && u.password === loginPassword);
     
@@ -263,7 +254,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleSetupUser = async (e: React.FormEvent) => {
+  const handleSetupUser = (e: React.FormEvent) => {
     e.preventDefault();
     if (!setupName || !setupPass) {
       alert('Preencha todos os campos');
